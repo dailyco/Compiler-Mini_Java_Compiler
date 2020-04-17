@@ -3,6 +3,10 @@ package scanner;
 import data.SymbolTable;
 
 public class Scanner {
+	private String src;
+	private String path;
+	private String fileName;
+	private SymbolTable symbolTable = new SymbolTable();
 	
 	public static void main(String[] args) {
 		if (args[0] == null) {
@@ -11,22 +15,31 @@ public class Scanner {
 		}
 		
 		Scanner scanner = new Scanner();
-		String src = scanner.readSource(args[0]);
-		SymbolTable symbolTable = scanner.analysisTokens(src);
-		scanner.writeTokens(symbolTable);
+		
+		scanner.getInfos(args[0]);
+		scanner.readSource();
+		scanner.analysisTokens();
+		scanner.writeTokens();
 	}
 	
-	private String readSource(String path) {
+	private void getInfos(String path) {
+		String[] strs = path.split("/");
+		
+		this.path = path;
+		this.fileName = strs[strs.length - 1];
+	}
+	
+	private void readSource() {
 		SourceReader sourceReader = new SourceReader();
-		return sourceReader.run(path);
+		src = sourceReader.run(path);
 	}
 	
-	private SymbolTable analysisTokens(String src) {
+	private void analysisTokens() {
 		LexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer();
-		lexicalAnalyzer.run(src);
+		symbolTable = lexicalAnalyzer.run(src);
 	}
 	
-	private void writeTokens(SymbolTable symbolTable) {
+	private void writeTokens() {
 		TokenWriter tokenWriter = new TokenWriter();
 		tokenWriter.run(symbolTable);
 	}
