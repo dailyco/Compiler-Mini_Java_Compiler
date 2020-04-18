@@ -25,8 +25,7 @@ public class Token {
 		LINE_COMMENTS, // //
 		SPACE, // ' '
 		NEW_LINE, // \n
-		TAB, // \t
-		EOF, // 
+		TAB; // \t
 	}
 	
 	private TokenType type;

@@ -32,7 +32,7 @@ public class TokenWriter {
             	for (Token token : tokenList) {
                 	switch(token.getTokenType()) {
                 		// Fake token 일 경우
-                		case LINE_COMMENTS: case SPACE: case NEW_LINE: case TAB: case EOF:
+                		case LINE_COMMENTS: case SPACE: case NEW_LINE: case TAB:
                 			continue;
                 		// Error가 발생한 경우
 //                		case ERROR:

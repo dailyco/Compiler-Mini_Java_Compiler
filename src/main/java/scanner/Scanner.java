@@ -33,10 +33,10 @@ public class Scanner {
 		src = sourceReader.run(path);
 	}
 	
-//	private void analysisTokens() {
-//		LexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer();
-//		symbolTable = lexicalAnalyzer.run(src);
-//	}
+	private void analysisTokens() {
+		LexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer(src);
+		tokenList = lexicalAnalyzer.run();
+	}
 	
 	private void writeTokens() {
 		TokenWriter tokenWriter = new TokenWriter(fileName);
