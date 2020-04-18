@@ -6,11 +6,17 @@ import java.io.IOException;
 
 import data.AnalyzedTokenList;
 import data.Token;
+import data.Token.TokenType;
+import exception.LexicalAnalysisException;
+import exception.LexicalAnalysisException.LexicalErrorCode;
 
 public class TokenWriter {
 	String path = "scanner_result/";
+	String fileName;
+	Token preToken;
 	
 	public TokenWriter() {
+		// When there is not dir, make it
 		File dir = new File(path);
 		
 		if (!dir.exists()) {
@@ -26,6 +32,7 @@ public class TokenWriter {
 	}
 	
 	public TokenWriter(String fileName) {
+		// When there is not dir, make it
 		File dir = new File(path);
 		
 		if (!dir.exists()) {
@@ -37,15 +44,13 @@ public class TokenWriter {
 			}
 		}
 		
+		this.fileName = fileName;
 		this.path += fileName.split("\\.")[0] + "_result.txt";
 	}
 	
 	public void run(AnalyzedTokenList tokenList, boolean containWhiteSpace) {
 		File file = new File(path);
 		FileWriter fw = null;
-		
-		// When there is not dir, make it
-		
 		
 		try {
             fw = new FileWriter(file, false);
@@ -54,18 +59,22 @@ public class TokenWriter {
             	for (Token token : tokenList)
                 	fw.write(token.toString() + "\n");
             } else {
+            	preToken = tokenList.get(0);
             	for (Token token : tokenList) {
+            		if (preToken.getTokenType() == TokenType.NUMBER_LITERAL && token.getTokenType() == TokenType.ID) {
+            			LexicalAnalysisException lException = new LexicalAnalysisException(preToken.getLine(), fileName, preToken.getValue() + token.getValue());
+	        			System.err.print(lException.getMessage(LexicalErrorCode.ILLEGAL_TOKEN));
+	        			return;
+            		}
+            		
                 	switch(token.getTokenType()) {
                 		// Fake token 일 경우
                 		case SPACE: case NEW_LINE: case TAB:
                 			continue;
-                		// Error가 발생한 경우
-//                		case ERROR:
-//                			fw.write(token.getValue());
-//                			break;
                 		default:
                 			fw.write(token.toString() + "\n");
                 	}
+                	preToken = token;
                 }
             }
             

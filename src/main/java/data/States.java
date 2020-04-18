@@ -1,6 +1,7 @@
 package data;
 
 import data.Token.TokenType;
+import exception.LexicalAnalysisException;
 
 public enum States {
 	Q0(false, null), Q1(false, null), Q2(true, TokenType.ID), Q3(true, TokenType.PLUS), Q4(true, TokenType.NUMBER_LITERAL), Q5(false, null), 
@@ -326,7 +327,6 @@ public enum States {
     		case '/':
     			return this.divide;
     		default:
-    			System.err.print("The character " + ch + "is wrong input character."); // TODO create wrong input exception
     			return null;
 		}
 		

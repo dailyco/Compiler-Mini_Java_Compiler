@@ -8,11 +8,12 @@ import data.Token.TokenType;
 import exception.LexicalAnalysisException;
 
 public class LexicalAnalyzer {
-	int idx;
-	int line;
-	String src;
-	String fileName;
-	AnalyzedTokenList tokenList = new AnalyzedTokenList();
+	private int idx;
+	private int line;
+	private String src;
+	private String fileName;
+	private AnalyzedTokenList tokenList = new AnalyzedTokenList();
+	private int illegalFlag = 0;
 	
 	public LexicalAnalyzer(String src, String fileName) {
 		idx = 0;
@@ -24,19 +25,18 @@ public class LexicalAnalyzer {
 	public AnalyzedTokenList run() {
 		while(idx < src.length()) {
 			// keyword check
-			System.out.println("idx: " + idx);
 			KeywordTable keywordType = KeywordTable.find(src.substring(idx));
 			
 			if (keywordType != null) {
-				Token token = new Token(TokenType.KEYWORD, keywordType.getKeyword());
-				System.out.println("token: " + token);
+				Token token = new Token(TokenType.KEYWORD, keywordType.getKeyword(), line);
 				
 				tokenList.add(token);
 				idx += token.length();
 			} else {
 				// DFA check
 				Token token = checkDFA(States.Q0, idx, idx);
-				tokenList.add(token);
+				if (token == null) return null;
+				else tokenList.add(token);
 			}
 		}
 		
@@ -47,12 +47,16 @@ public class LexicalAnalyzer {
 	private Token checkDFA(States curr_state, int start_idx, int r_idx) {
 		do {
 			curr_state = curr_state.transition(src.charAt(r_idx++));
-		} while (curr_state != States.ERROR && !curr_state.isAccept());
+		} while (curr_state != null && curr_state != States.ERROR && !curr_state.isAccept());
 		
-		System.out.println("states: " + curr_state);
-		
-		if (curr_state == States.ERROR) return null;
-		else {
+		if (curr_state == null) {
+			LexicalAnalysisException lException = new LexicalAnalysisException(line, fileName, src.charAt(r_idx-1));
+			System.err.print(lException.getMessage());
+			return null;
+		} else if (curr_state == States.ERROR) {
+			illegalFlag = 1;
+			return null;
+		} else {
 			Token token = null;
 			
 			if (isMoreChar(curr_state.getTokenType())) {
@@ -60,11 +64,9 @@ public class LexicalAnalyzer {
 			}
 			
 			if (token == null) {
-				token = new Token(curr_state.getTokenType(), src.substring(start_idx, r_idx));
+				token = new Token(curr_state.getTokenType(), src.substring(start_idx, r_idx), line);
 				if (token.getTokenType() == TokenType.NEW_LINE) line++;
 				idx = r_idx;
-				
-				System.out.println("token: " + token);
 				
 				return token;
 			} else return token;
@@ -82,4 +84,15 @@ public class LexicalAnalyzer {
 		}
 	}
 	
+	public int getLine() {
+		return line;
+	}
+	
+	public int getIdx() {
+		return idx;
+	}
+	
+	public int getIllegalFlag() {
+		return illegalFlag;
+	}
 }

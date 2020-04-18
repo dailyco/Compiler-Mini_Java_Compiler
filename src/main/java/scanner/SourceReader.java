@@ -14,9 +14,6 @@ public class SourceReader {
 		try {
 			lines = Files.readAllLines(Paths.get(path), StandardCharsets.UTF_8);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			System.err.print("File not found: Please check the file"); // TODO create file not found exception
 			return "";
 		}
 		

@@ -30,10 +30,12 @@ public class Token {
 	
 	private TokenType type;
 	private String value;
+	private int line;
 	
-	public Token(TokenType type, String value) {
+	public Token(TokenType type, String value, int line) {
 		this.type = type;
 		this.value = value;
+		this.line = line;
 	}
 	
 	public TokenType getTokenType() {
@@ -50,5 +52,9 @@ public class Token {
 	
 	public int length() {
 		return value.length();
+	}
+	
+	public int getLine() {
+		return line;
 	}
  }
