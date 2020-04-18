@@ -47,4 +47,8 @@ public class Token {
 	public String toString() {
 		return value + "\t" + type;
 	}
+	
+	public int length() {
+		return value.length();
+	}
  }
