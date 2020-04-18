@@ -6,6 +6,7 @@ import data.States;
 import data.Token;
 import data.Token.TokenType;
 import exception.LexicalAnalysisException;
+import exception.LexicalAnalysisException.LexicalErrorCode;
 
 public class LexicalAnalyzer {
 	private int idx;
@@ -14,6 +15,7 @@ public class LexicalAnalyzer {
 	private String fileName;
 	private AnalyzedTokenList tokenList = new AnalyzedTokenList();
 	private int illegalFlag = 0;
+	private int illegalIdx;
 	
 	public LexicalAnalyzer(String src, String fileName) {
 		idx = 0;
@@ -35,7 +37,11 @@ public class LexicalAnalyzer {
 			} else {
 				// DFA check
 				Token token = checkDFA(States.Q0, idx, idx);
-				if (token == null) return null;
+				if (token == null) {
+					Token lastToken = tokenList.get(tokenList.size()-1);
+					tokenList.add(new Token(TokenType.ERROR, src.substring(idx, illegalIdx + 1), line));
+					return null;
+				}
 				else tokenList.add(token);
 			}
 		}
@@ -50,11 +56,13 @@ public class LexicalAnalyzer {
 		} while (curr_state != null && curr_state != States.ERROR && !curr_state.isAccept());
 		
 		if (curr_state == null) {
-			LexicalAnalysisException lException = new LexicalAnalysisException(line, fileName, src.charAt(r_idx-1));
-			System.err.print(lException.getMessage());
+			illegalIdx = r_idx-1;
+			LexicalAnalysisException lException = new LexicalAnalysisException(line, fileName, src.charAt(illegalIdx));
+			System.err.print(lException.getMessage(LexicalErrorCode.ILLEGAL_CODE));
 			return null;
 		} else if (curr_state == States.ERROR) {
 			illegalFlag = 1;
+			illegalIdx = r_idx-1;
 			return null;
 		} else {
 			Token token = null;
@@ -94,5 +102,9 @@ public class LexicalAnalyzer {
 	
 	public int getIllegalFlag() {
 		return illegalFlag;
+	}
+	
+	public AnalyzedTokenList getTokenList() {
+		return tokenList;
 	}
 }

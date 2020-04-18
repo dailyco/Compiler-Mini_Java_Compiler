@@ -25,7 +25,10 @@ public class Token {
 		LINE_COMMENTS, // //
 		SPACE, // ' '
 		NEW_LINE, // \n
-		TAB; // \t
+		TAB, // \t
+		
+		// Error
+		ERROR;
 	}
 	
 	private TokenType type;
@@ -46,15 +49,17 @@ public class Token {
 		return value;
 	}
 	
-	public String toString() {
-		return value + "\t" + type;
-	}
-	
 	public int length() {
 		return value.length();
 	}
 	
 	public int getLine() {
 		return line;
+	}
+	
+	public String toString() {
+		if (type == TokenType.ERROR) 
+			return "exception.LexicalAnalysisException:\n\tToken is illegal ";
+		else return value + "\t" + type;
 	}
  }

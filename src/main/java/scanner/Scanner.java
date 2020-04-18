@@ -28,15 +28,13 @@ public class Scanner {
 		if (src == "") {
 			sException = new ScannerException(path);
 			System.err.print(sException.getMessage(ScannerErrorCode.FILE_NOT_FOUND));
-			return;
 		}
 		
 		
 		int flag = analysisTokens();
 		if (flag == -1) {
 			System.err.print(lException.getMessage(LexicalErrorCode.ILLEGAL_CODE));
-			return;
-		} else if (flag == 0) return;
+		}
 		
 		writeTokens();
 	}
@@ -59,8 +57,10 @@ public class Scanner {
 		
 		if (tokenList == null && lexicalAnalyzer.getIllegalFlag() == 1) {
 			lException = new LexicalAnalysisException(lexicalAnalyzer.getLine(), fileName, src.charAt(lexicalAnalyzer.getIdx()));
+			tokenList = lexicalAnalyzer.getTokenList();
 			return -1;
 		} else if (tokenList == null) {
+			tokenList = lexicalAnalyzer.getTokenList();
 			return 0;
 		} else return 1;
 	}

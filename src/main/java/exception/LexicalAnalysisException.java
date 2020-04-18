@@ -29,7 +29,7 @@ public class LexicalAnalysisException extends Exception {
 	}
 	
 	public String getMessage(LexicalErrorCode code) {
-		String msg = "\nexception.LexicalAnalysisException:";
+		String msg = "exception.LexicalAnalysisException:";
 		
 		switch(code) {
 			case WRONG_INPUT:

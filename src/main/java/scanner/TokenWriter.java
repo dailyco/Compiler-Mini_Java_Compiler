@@ -64,6 +64,8 @@ public class TokenWriter {
             		if (preToken.getTokenType() == TokenType.NUMBER_LITERAL && token.getTokenType() == TokenType.ID) {
             			LexicalAnalysisException lException = new LexicalAnalysisException(preToken.getLine(), fileName, preToken.getValue() + token.getValue());
 	        			System.err.print(lException.getMessage(LexicalErrorCode.ILLEGAL_TOKEN));
+	        			fw.write("\n" + lException.getMessage(LexicalErrorCode.ILLEGAL_TOKEN));
+	        			fw.close();
 	        			return;
             		}
             		
@@ -71,6 +73,10 @@ public class TokenWriter {
                 		// Fake token 일 경우
                 		case SPACE: case NEW_LINE: case TAB:
                 			continue;
+                		case ERROR: 
+                			fw.write("\n" + token.toString() + "\'" + preToken.getValue() + token.getValue() + "\' (" + fileName + ":" + token.getLine() + ")\n");
+                			fw.close();
+                			return;
                 		default:
                 			fw.write(token.toString() + "\n");
                 	}
