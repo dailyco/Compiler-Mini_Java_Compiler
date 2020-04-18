@@ -8,19 +8,44 @@ import data.AnalyzedTokenList;
 import data.Token;
 
 public class TokenWriter {
-	String path;
+	String path = "scanner_result/";
 	
 	public TokenWriter() {
-		 this.path = "scanner_result/result.txt";
+		File dir = new File(path);
+		
+		if (!dir.exists()) {
+			try {
+				dir.mkdir();
+				} 
+		        catch(Exception e){
+			    e.getStackTrace();
+			}
+		}
+		
+		this.path += "result.txt";
 	}
 	
 	public TokenWriter(String fileName) {
-		 this.path = "scanner_result/" + fileName.split("//.")[0] + "_result.txt";
+		File dir = new File(path);
+		
+		if (!dir.exists()) {
+			try {
+				dir.mkdir();
+				} 
+		        catch(Exception e){
+			    e.getStackTrace();
+			}
+		}
+		
+		this.path += fileName.split("\\.")[0] + "_result.txt";
 	}
 	
 	public void run(AnalyzedTokenList tokenList, boolean containWhiteSpace) {
 		File file = new File(path);
 		FileWriter fw = null;
+		
+		// When there is not dir, make it
+		
 		
 		try {
             fw = new FileWriter(file, false);
@@ -32,7 +57,7 @@ public class TokenWriter {
             	for (Token token : tokenList) {
                 	switch(token.getTokenType()) {
                 		// Fake token 일 경우
-                		case LINE_COMMENTS: case SPACE: case NEW_LINE: case TAB:
+                		case SPACE: case NEW_LINE: case TAB:
                 			continue;
                 		// Error가 발생한 경우
 //                		case ERROR:

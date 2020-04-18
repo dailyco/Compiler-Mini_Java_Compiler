@@ -17,7 +17,7 @@ public class Scanner {
 		getInfos(args[0]);
 		readSource();
 		if (src == "") return; // File not found exception
-//		analysisTokens();
+		analysisTokens();
 		writeTokens();
 	}
 	
@@ -34,7 +34,7 @@ public class Scanner {
 	}
 	
 	private void analysisTokens() {
-		LexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer(src);
+		LexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer(src, fileName);
 		tokenList = lexicalAnalyzer.run();
 	}
 	

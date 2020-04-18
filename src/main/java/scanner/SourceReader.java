@@ -22,7 +22,6 @@ public class SourceReader {
 		
 		for(String line: lines)
             sb.append(line + "\n");
-        sb.append('\255');
         
 		return sb.toString();
 	}
